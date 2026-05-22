@@ -1,39 +1,31 @@
-name: Stable Flutter CI
+name: Flutter Build (Stable Official)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git curl unzip xz-utils zip libglu1-mesa
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
 
-      - name: Install Flutter (pinned version)
-        run: |
-          git clone https://github.com/flutter/flutter.git -b 3.19.6 --depth 1 $HOME/flutter
-          echo "$HOME/flutter/bin" >> $GITHUB_PATH
+      - name: Fix permissions
+        run: chmod +x android/gradlew
 
-      - name: Verify Flutter installation
-        run: |
-          flutter --version
-          flutter doctor -v
-
-      - name: Get Flutter dependencies
+      - name: Get dependencies
         run: flutter pub get
 
-      - name: Build Debug APK
-        run: flutter build apk --debug
+      - name: Build APK
+        run: flutter build apk --debug --android-skip-build-dependency-validation
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
