@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install system dependencies
@@ -17,21 +17,23 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y git curl unzip xz-utils zip libglu1-mesa
 
-      - name: Install Flutter (fixed version)
+      - name: Install Flutter (pinned version)
         run: |
           git clone https://github.com/flutter/flutter.git -b 3.19.6 --depth 1 $HOME/flutter
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
-      - name: Verify Flutter
-        run: flutter doctor -v
+      - name: Verify Flutter installation
+        run: |
+          flutter --version
+          flutter doctor -v
 
-      - name: Get dependencies
+      - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Build APK
+      - name: Build Debug APK
         run: flutter build apk --debug
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
