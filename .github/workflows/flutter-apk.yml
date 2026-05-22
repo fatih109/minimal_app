@@ -12,19 +12,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install system deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
+          sudo apt-get install -y git curl unzip xz-utils zip libglu1-mesa
 
-      - name: Install Flutter manually
+      - name: Install Flutter (stable)
         run: |
-          git clone https://github.com/flutter/flutter.git -b stable --depth 1
-          echo "$PWD/flutter/bin" >> $GITHUB_PATH
-          export PATH="$PWD/flutter/bin:$PATH"
-          flutter doctor
+          git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
+          echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
-      - name: Get packages
+      - name: Verify Flutter
+        run: flutter doctor
+
+      - name: Get dependencies
         run: flutter pub get
 
       - name: Build APK
@@ -35,4 +36,3 @@ jobs:
         with:
           name: app-debug
           path: build/app/outputs/flutter-apk/app-debug.apk
-
