@@ -9,16 +9,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # Flutter'ı SABİT sürüm ile kur (random stable yok)
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git curl unzip xz-utils zip libglu1-mesa
+
       - name: Install Flutter (fixed version)
         run: |
           git clone https://github.com/flutter/flutter.git -b 3.19.6 --depth 1 $HOME/flutter
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
-      - name: Flutter doctor
+      - name: Verify Flutter
         run: flutter doctor -v
 
       - name: Get dependencies
