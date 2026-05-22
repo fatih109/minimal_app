@@ -1,4 +1,4 @@
-name: Flutter APK Build
+name: Stable Flutter CI
 
 on:
   push:
@@ -9,21 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install system deps
+      # Flutter'ı SABİT sürüm ile kur (random stable yok)
+      - name: Install Flutter (fixed version)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y git curl unzip xz-utils zip libglu1-mesa
-
-      - name: Install Flutter (stable)
-        run: |
-          git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
+          git clone https://github.com/flutter/flutter.git -b 3.19.6 --depth 1 $HOME/flutter
           echo "$HOME/flutter/bin" >> $GITHUB_PATH
 
-      - name: Verify Flutter
-        run: flutter doctor
+      - name: Flutter doctor
+        run: flutter doctor -v
 
       - name: Get dependencies
         run: flutter pub get
